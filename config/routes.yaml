@@ -1,3 +1,12 @@
-#index:
-#    path: /
-#    controller: App\Controller\DefaultController::index
+index:
+   path: /
+   controller: App\Controller\VoitureController::index
+voir:
+   path: /voir/{voiture}
+   controller: App\Controller\VoitureController::voir
+login:
+   path: /login
+   controller: App\Controller\VoitureController::login
+logout:
+   path: /logout
+   controller: App\Controller\VoitureController::logout
