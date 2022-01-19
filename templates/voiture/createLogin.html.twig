@@ -11,12 +11,7 @@
 <div class="example-wrapper">
     {{ form_start(form) }}
     	{{ form_widget(form) }}
-    	<input type="submit" value="Log In">
+    	<input type="submit" value="Create">
     {{ form_end(form) }}
-    {% if incorrect %}
-    	<a href="#">Incorrect! Please Try Again</a>
-    {% endif %}
-
-    <h1><a href="{{path('createLogin')}}">Create a login?</a></h1>
 </div>
 {% endblock %}

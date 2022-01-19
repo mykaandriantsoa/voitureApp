@@ -59,7 +59,33 @@ class VoitureController extends AbstractController
 
     public function login(Request $request, VoitureRepository $voitures, UserTypeRepository $userType, UserRepository $u): Response
     {
-    	$incorrect = false;
+        $incorrect = false;
+
+        $form = $this->createFormBuilder($user = new \App\Entity\User)
+            ->add("login", null, ["attr"=>["autofocus"=>true]])
+            ->add("password", PasswordType::class)
+            ->getForm()
+        ;
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $userFinded = $u->findOneBy(["login"=>$user->getLogin(), "password"=>$user->getPassword()]);
+            if ($userFinded) {
+                $serv = new Service();
+                $serv->setSessionUser($userFinded);
+                return $this->redirectToRoute('index', [
+                    'voitures' => $voitures->findAll(),
+                ]);
+            }else{
+                $incorrect = true;
+            }
+        }
+
+        return $this->render('voiture/login.html.twig', ['form'=>$form->createView(), 'incorrect'=>$incorrect]);
+    }
+
+    public function createLogin(Request $request, UserTypeRepository $userType, UserRepository $u): Response
+    {
 
     	$form = $this->createFormBuilder($user = new \App\Entity\User)
     		->add("login", null, ["attr"=>["autofocus"=>true]])
@@ -71,17 +97,16 @@ class VoitureController extends AbstractController
     	if ($form->isSubmitted() && $form->isValid()) {
     		$userFinded = $u->findOneBy(["login"=>$user->getLogin(), "password"=>$user->getPassword()]);
     		if ($userFinded) {
-                $serv = new Service();
-                $serv->setSessionUser($userFinded);
-    			return $this->redirectToRoute('index', [
-    			    'voitures' => $voitures->findAll(),
-    			]);
+                dd('this user already exists');
     		}else{
-    			$incorrect = true;
+                $user->setUserType($userType->find(3));
+                $this->em->persist($user);
+    			$this->em->flush();
+                return $this->redirectToRoute('login'); 
     		}
     	}
 
-        return $this->render('voiture/login.html.twig', ['form'=>$form->createView(), 'incorrect'=>$incorrect]);
+        return $this->render('voiture/createLogin.html.twig', ['form'=>$form->createView()]);
     }
 
     public function logout(VoitureRepository $voitures): Response

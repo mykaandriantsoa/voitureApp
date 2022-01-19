@@ -7,6 +7,9 @@ voir:
 login:
    path: /login
    controller: App\Controller\VoitureController::login
+createLogin:
+   path: /createLogin
+   controller: App\Controller\VoitureController::createLogin
 logout:
    path: /logout
    controller: App\Controller\VoitureController::logout
